@@ -1,0 +1,36 @@
+version: "3"
+services:
+  redis:
+    image: redis:alpine
+  bearerbox:
+    image: kannel:1.4.5-alpine
+    build:
+      context: 1.4.5
+      args:
+        KANNEL_DIR: /etc/kannel
+    volumes:
+      - ./conf.d:/etc/kannel/conf.d:z
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+      - /dev/ttyUSB2:/dev/ttyUSB2
+    env_file:
+      - .env
+    environment:
+      - BOX_TYPE=bearerbox
+      - INCLUDE_CONFIGS=bearerbox.conf huawei-e3131.conf redis.conf
+    depends_on:
+      - redis
+  smsbox:
+    image: kannel:1.4.5-alpine
+    volumes:
+      - ./conf.d:/etc/kannel/conf.d:z
+    depends_on:
+      - bearerbox
+    ports:
+      - "8008:13025"
+    env_file:
+      - .env
+    environment:
+      - BOX_TYPE=smsbox
+      - INCLUDE_CONFIGS=bearerbox.conf redis.conf
