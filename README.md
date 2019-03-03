@@ -1,4 +1,5 @@
 # KANNEL IN DOCKER
+[![Build Status](https://travis-ci.org/ngendah/kannel-docker.svg?branch=master)](https://travis-ci.org/ngendah/kannel-docker)
 
 Can Kannel run in docker and be connected to a usb modem?
 
@@ -38,10 +39,9 @@ Can Kannel run in docker and be connected to a usb modem?
 
 9. On `main.yaml` file `bearerbox.environments:INCLUDE_CONFIGS` add your modem configuration filename and remove the listed `huawei-e3131.conf`
 
-10. Build and run;
-   
-   ```
-   $ docker-compose -f main.yaml up --build
+10. Build and run; 
+    ```
+    $ docker-compose -f main.yaml up --build
     ```
     
 11. Examine CLI for any errors, if all ok test sending as follows;
