@@ -23,6 +23,11 @@ Can Kannel run in docker and be connected to a usb modem?
 
 5. On `main.yml` on `bearerbox.devices` check if the usb modem `tty` is listed and if its not add it.
 
+6. Create directory `conf.d`
+    ```
+    $ mkdir conf.d
+    ```
+
 6. Copy `bearerbox.conf` and  `redis.conf` from conf.d.sample to `conf.d`.
 
 7. On the `conf.d` add your modems configuration by copying `modems.conf.sample` from `conf.d.sample`, rename name it and update the provided settings with exception of `host`, `device` and `my-number`.
