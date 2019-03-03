@@ -1,0 +1,8 @@
+language: python
+services: docker
+
+install:
+  - docker-compose -f main.yaml build
+
+script:
+  - python -c "assert(2==`docker images | wc -l`)"

@@ -25,7 +25,7 @@ RUN set -ex \
 
 RUN echo bison --version
 
-ENV KANNEL_BUILD_PACKAGES="linux-headers"
+ENV KANNEL_BUILD_PACKAGES="linux-headers hiredis-dev postgresql-dev"
 RUN apk add --no-cache --virtual .kannel-deps $KANNEL_BUILD_PACKAGES
 RUN echo "#include <unistd.h>" > /usr/include/sys/unistd.h
 RUN echo "#include <poll.h>" > /usr/include/sys/poll.h
@@ -36,7 +36,7 @@ RUN set -ex \
 	&& tar zxf gateway-1.4.5.tar.gz \
 	&& rm gateway-1.4.5.tar.gz \
 	&& cd gateway-1.4.5 \
-	&& ./configure \
+	&& ./configure --with-redis --with-pgsql  \
 	&& make \
 	&& make install \
 	&& cd .. \
@@ -52,3 +52,4 @@ COPY ./startbox.sh .
 ENTRYPOINT ["sh", "-c", "./startbox.sh"]
 
 # TODO check sha512 sums
+# TODO mark devel packages for removal
