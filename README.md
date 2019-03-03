@@ -1,4 +1,5 @@
 # KANNEL IN DOCKER
+[![Build Status](https://travis-ci.org/ngendah/kannel-docker.svg?branch=master)](https://travis-ci.org/ngendah/kannel-docker)
 
 Can Kannel run in docker and be connected to a usb modem?
 
