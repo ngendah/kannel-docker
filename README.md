@@ -35,7 +35,7 @@ Can Kannel run in docker and be connected to a usb modem?
     
     In the `conf.d` directory I have included my modem, `huawei-e3131`,  configuration as a sample.
     
-    [Kannel GSM Modem guide](https://www.kannel.org/download/kannel-userguide-snapshot/userguide.html#sms-gateway) provides an excellent guide on how to obtain and set this values.
+    [Kannel GSM Modem guide](https://www.kannel.org/download/kannel-userguide-snapshot/userguide.html#sms-gateway) provides an excellent guide on how to obtain and set these values.
 
 9. On `main.yaml` file `bearerbox.environments:INCLUDE_CONFIGS` add your modem configuration filename and remove the listed `huawei-e3131.conf`
 
