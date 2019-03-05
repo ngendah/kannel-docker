@@ -8,7 +8,7 @@ config="$KANNEL_DIR/$BASE_CONFIG_FILENAME"
 included_configs=$INCLUDE_CONFIGS
 log_level=1
 if [[ "$KANNEL_LOG_LEVEL" == 'DEBUG' ]]; then
-    $log_level=0
+    log_level=0
 fi
 
 box="$BOX_TYPE"
@@ -26,6 +26,12 @@ dlr_storage_port=$KANNEL_DLR_STORAGE_PORT
 
 device_putty=$KANNEL_DEVICE_PUTTY
 device_host=$KANNEL_DEVICE_HOST
+device_type=$KANNEL_DEVICE_TYPE
+modem_smscid=$KANNEL_DEVICE_SMSCID
+modem_name=$KANNEL_DEVICE_MODEM_NAME
+modem_manufacturer=$KANNEL_DEVICE_MANUFACTURER
+modem_detect_string=$KANNEL_DEVICE_MODEM_DETECT_STRING
+modem_init_string=$KANNEL_DEVICE_MODEM_INIT_STRING
 
 
 [[ ! -z "$included_configs" ]] || exit 1
@@ -66,11 +72,19 @@ configure_bearer(){
 }
 
 configure_modem(){
-    local modem_present=`grep -rni 'modemtype' $1 | wc -l`
-    [[ $modem_present -ne 0 ]] || return
+    local smsc_present=`grep -rni 'group *= *smsc' $1 | wc -l`
+    [[ $smsc_present -ne 0 ]] || return
     sed -i "s|^\(my-number\\s*\)=.*$|\\1= $msisdn|g" $1
     sed -i "s|^\(device\\s*\)=.*$|\\1= $device_putty|g" $1
     sed -i "s|^\(host\\s*\)=.*$|\\1= $device_host|g" $1
+    sed -i "s|^\(smsc-id\\s*\)=.*$|\\1= $modem_smscid|g" $1
+    local modem_present=`grep -rni 'group *= *modems' $1 | wc -l`
+    [[ $modem_present -ne 0 ]] || return
+    sed -i "s|^\(modemtype\\s*\)=.*$|\\1= $modem_manufacturer|g" $1
+    sed -i "s|^\(id\\s*\)=.*$|\\1= $modem_name|g" $1
+    sed -i "s|^\(name\\s*\)=.*$|\\1= $modem_name|g" $1
+    sed -i "s|^\(detect-string\\s*\)=.*$|\\1= $modem_detect_string|g" $1
+    sed -i "s|^\(init-string\\s*\)=.*$|\\1= $modem_init_string|g" $1
 }
 
 configure_database(){
