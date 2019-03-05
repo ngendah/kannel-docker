@@ -6,7 +6,33 @@
 kannel_dir="$KANNEL_DIR"
 config="$KANNEL_DIR/$BASE_CONFIG_FILENAME"
 included_configs=$INCLUDE_CONFIGS
+log_level=1
+if [[ "$KANNEL_LOG_LEVEL" == 'DEBUG' ]]; then
+    log_level=0
+fi
+
 box="$BOX_TYPE"
+bearerbox_host=$KANNEL_BEARERBOX_HOST
+smsc=$KANNEL_SMSC
+msisdn=$KANNEL_MSISDN
+
+dlr_storage_type=$KANNEL_DLR_STORAGE_TYPE
+dlr_storage=$KANNEL_DLR_STORAGE
+dlr_storage_host=$KANNEL_DLR_STORAGE_HOST
+dlr_storage_username=$KANNEL_DLR_STORAGE_USERNAME
+dlr_storage_dbname=$KANNEL_DLR_STORAGE_DBNAME
+dlr_storage_password=$KANNEL_DLR_STORAGE_PASSWORD
+dlr_storage_port=$KANNEL_DLR_STORAGE_PORT
+
+device_putty=$KANNEL_DEVICE_PUTTY
+device_host=$KANNEL_DEVICE_HOST
+device_type=$KANNEL_DEVICE_TYPE
+modem_smscid=$KANNEL_DEVICE_SMSCID
+modem_name=$KANNEL_DEVICE_MODEM_NAME
+modem_manufacturer=$KANNEL_DEVICE_MANUFACTURER
+modem_detect_string=$KANNEL_DEVICE_MODEM_DETECT_STRING
+modem_init_string=$KANNEL_DEVICE_MODEM_INIT_STRING
+
 
 [[ ! -z "$included_configs" ]] || exit 1
 
@@ -21,11 +47,11 @@ make_config_file(){
 }
 
 configure(){
-    if [[ z "$KANNEL_BEARERBOX_HOST" ]]; then
+    if [[ z "$bearerbox_host" ]]; then
         echo "kannel bearerbox host has not been set"
         exit 1
     fi
-    if [[ -z "$KANNEL_MSISDN" ]]; then
+    if [[ -z "$msisdn" ]]; then
         echo "kannel msisdn number has not been set"
         exit 1
     fi
@@ -37,25 +63,33 @@ configure(){
 }
 
 configure_bearer(){
-    sed -i "s|^\(forced-smsc\\s*\)=.*$|\\1= $KANNEL_SMSC|g" $1
-    sed -i "s|^\(default-smsc\\s*\)=.*$|\\1= $KANNEL_SMSC|g" $1
-    sed -i "s|^\(accepted-smsc\\s*\)=.*$|\\1= $KANNEL_SMSC|g" $1
-    sed -i "s|^\(bearerbox-host\\s*\)=.*$|\\1= $KANNEL_BEARERBOX_HOST|g" $1
-    sed -i "s|^\(global-sender\\s*\)=.*$|\\1= $KANNEL_MSISDN|g" $1
-    sed -i "s|^\(allowed-receiver-prefix\\s*\)=.*$|\\1= $KANNEL_MSISDN|g" $1
+    sed -i "s|^\(forced-smsc\\s*\)=.*$|\\1= $smsc|g" $1
+    sed -i "s|^\(default-smsc\\s*\)=.*$|\\1= $smsc|g" $1
+    sed -i "s|^\(accepted-smsc\\s*\)=.*$|\\1= $smsc|g" $1
+    sed -i "s|^\(bearerbox-host\\s*\)=.*$|\\1= $bearerbox_host|g" $1
+    sed -i "s|^\(global-sender\\s*\)=.*$|\\1= $msisdn|g" $1
+    sed -i "s|^\(allowed-receiver-prefix\\s*\)=.*$|\\1= $msisdn|g" $1
 }
 
 configure_modem(){
-    local modem_present=`grep -rni 'modemtype' $1 | wc -l`
+    local smsc_present=`grep -rni 'group *= *smsc' $1 | wc -l`
+    [[ $smsc_present -ne 0 ]] || return
+    sed -i "s|^\(my-number\\s*\)=.*$|\\1= $msisdn|g" $1
+    sed -i "s|^\(device\\s*\)=.*$|\\1= $device_putty|g" $1
+    sed -i "s|^\(host\\s*\)=.*$|\\1= $device_host|g" $1
+    sed -i "s|^\(smsc-id\\s*\)=.*$|\\1= $modem_smscid|g" $1
+    local modem_present=`grep -rni 'group *= *modems' $1 | wc -l`
     [[ $modem_present -ne 0 ]] || return
-    sed -i "s|^\(my-number\\s*\)=.*$|\\1= $KANNEL_MSISDN|g" $1
-    sed -i "s|^\(device\\s*\)=.*$|\\1= $KANNEL_DEVICE_PUTTY|g" $1
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $KANNEL_DEVICE_HOST|g" $1
+    sed -i "s|^\(modemtype\\s*\)=.*$|\\1= $modem_manufacturer|g" $1
+    sed -i "s|^\(id\\s*\)=.*$|\\1= $modem_name|g" $1
+    sed -i "s|^\(name\\s*\)=.*$|\\1= $modem_name|g" $1
+    sed -i "s|^\(detect-string\\s*\)=.*$|\\1= $modem_detect_string|g" $1
+    sed -i "s|^\(init-string\\s*\)=.*$|\\1= $modem_init_string|g" $1
 }
 
 configure_database(){
-    sed -i "s|^\(dlr-storage\\s*\)=.*$|\\1= ${KANNEL_DLR_STORAGE_TYPE:-internal}|g" $1
-    [[ "$KANNEL_DLR_STORAGE" != "internal" ]] || return
+    sed -i "s|^\(dlr-storage\\s*\)=.*$|\\1= ${dlr_storage_type:-internal}|g" $1
+    [[ "$dlr_storage" != "internal" ]] || return
     local is_redis=`grep -rni 'redis-connection' $1 | wc -l`
     [[ $is_redis -eq 0 ]] || configure_redis $1 && return
     local is_pgsql=`grep -rni 'pgsql-connection' $1 | wc -l`
@@ -65,34 +99,34 @@ configure_database(){
 }
 
 configure_pgsql(){
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_HOST|g" $1
-    sed -i "s|^\(username\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_USERNAME|g" $1
-    sed -i "s|^\(database\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_DBNAME|g" $1
-    sed -i "s|^\(password\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_PASSWORD|g" $1
+    sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
+    sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
+    sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
+    sed -i "s|^\(password\\s*\)=.*$|\\1= $dlr_storage_password|g" $1
 }
 
 configure_mysql(){
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_HOST|g" $1
-    sed -i "s|^\(username\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_USERNAME|g" $1
-    sed -i "s|^\(database\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_DBNAME|g" $1
-    sed -i "s|^\(password\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_PASSWORD|g" $1
+    sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
+    sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
+    sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
+    sed -i "s|^\(password\\s*\)=.*$|\\1= $dlr_storage_password|g" $1
 }
 
 configure_redis(){
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_HOST|g" $1
-    sed -i "s|^\(port\\s*\)=.*$|\\1= ${KANNEL_DLR_STORAGE_PORT:-6379}|g" $1
-    sed -i "s|^\(database\\s*\)=.*$|\\1= ${KANNEL_DLR_STORAGE_DBNAME:-1}|g" $1
-    if [[ ! -z"$KANNEL_DLR_STORAGE_PASSWORD" ]]; then
-        sed -i "s|^#?\(password\\s*\)=.*$|\\1= $KANNEL_DLR_STORAGE_PASSWORD|g" $1
+    sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
+    sed -i "s|^\(port\\s*\)=.*$|\\1= ${dlr_storage_port:-6379}|g" $1
+    sed -i "s|^\(database\\s*\)=.*$|\\1= ${dlr_storage_dbname:-1}|g" $1
+    if [[ ! -z"$dlr_storage_password" ]]; then
+        sed -i "s|^#?\(password\\s*\)=.*$|\\1= $dlr_storage_password|g" $1
     fi
 }
 
 if [[ $box == "bearerbox" ]]; then
     make_config_file
-    exec bearerbox -v 0 $config
+    exec bearerbox -v $log_level $config
 elif [[ $box == "smsbox" ]]; then
     make_config_file
-    exec smsbox -v 0 $config
+    exec smsbox -v $log_level $config
 else
     echo "BOX_TYPE=$box not cannot be started, review startbox.sh to enable it"
 fi

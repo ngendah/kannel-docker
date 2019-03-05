@@ -18,7 +18,7 @@ services:
       - .env
     environment:
       - BOX_TYPE=bearerbox
-      - INCLUDE_CONFIGS=bearerbox.conf huawei-e3131.conf redis.conf
+      - INCLUDE_CONFIGS=bearerbox.conf modem.conf redis.conf
     depends_on:
       - redis
   smsbox:
