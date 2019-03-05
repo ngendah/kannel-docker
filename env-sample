@@ -5,7 +5,9 @@ KANNEL_BEARERBOX_HOST=bearerbox
 KANNEL_MSISDN=
 # The Mobile Network Operator sms center
 KANNEL_SMSC=
-KANNEL_LOG_LEVEL=DEBUG
+# 0 is for ’debug’, 1 ’info’, 2 ’warning, 3 ’error’ and 4 ’panic’
+# empty variable defaults to 0
+KANNEL_LOG_LEVEL=3
 
 KANNEL_DLR_STORAGE_TYPE=redis
 KANNEL_DLR_STORAGE_HOST=redis

@@ -6,10 +6,7 @@
 kannel_dir="$KANNEL_DIR"
 config="$KANNEL_DIR/$BASE_CONFIG_FILENAME"
 included_configs=$INCLUDE_CONFIGS
-log_level=1
-if [[ "$KANNEL_LOG_LEVEL" == 'DEBUG' ]]; then
-    log_level=0
-fi
+log_level=${KANNEL_LOG_LEVEL:-0}
 
 box="$BOX_TYPE"
 bearerbox_host=$KANNEL_BEARERBOX_HOST
