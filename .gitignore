@@ -1,5 +1,4 @@
 .env
 .idea/
-.conf.d/
-.conf.d/*.conf
-.conf/
+conf.d/
+conf/
