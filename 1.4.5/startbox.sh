@@ -34,7 +34,7 @@ modem_init_string=$KANNEL_DEVICE_MODEM_INIT_STRING
 [[ ! -z "$included_configs" ]] || exit 1
 
 make_config_file(){
-    [[ ! -f $config ]] || rm $config
+    [[ ! -f "$config" ]] || rm $config
     for conf in $included_configs; do
         local config_file_path=$kannel_dir/conf.d/$conf
         configure "$config_file_path"
@@ -44,7 +44,7 @@ make_config_file(){
 }
 
 configure(){
-    if [[ z "$bearerbox_host" ]]; then
+    if [[ -z "$bearerbox_host" ]]; then
         echo "kannel bearerbox host has not been set"
         exit 1
     fi
