@@ -10,8 +10,9 @@ log_level=${KANNEL_LOG_LEVEL:-0}
 
 box="$BOX_TYPE"
 bearerbox_host=$KANNEL_BEARERBOX_HOST
-smsc=$KANNEL_SMSC
-msisdn=$KANNEL_MSISDN
+smsc=$KANNEL_BEARERBOX_SMSC
+msisdn=$KANNEL_BEARERBOX_MSISDN
+sendsms_url=$KANNEL_SENDSMS_URL
 
 dlr_storage_type=$KANNEL_DLR_STORAGE_TYPE
 dlr_storage=$KANNEL_DLR_STORAGE

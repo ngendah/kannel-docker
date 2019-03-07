@@ -2,9 +2,9 @@ BASE_CONFIG_FILENAME=default.conf
 KANNEL_DIR=/etc/kannel
 KANNEL_BEARERBOX_HOST=bearerbox
 # The usb modem sim card number
-KANNEL_MSISDN=
+KANNEL_BEARERBOX_MSISDN=
 # The Mobile Network Operator sms center
-KANNEL_SMSC=
+KANNEL_BEARERBOX_SMSC=
 # 0 is for ’debug’, 1 ’info’, 2 ’warning, 3 ’error’ and 4 ’panic’
 # empty variable defaults to 0
 KANNEL_LOG_LEVEL=3
