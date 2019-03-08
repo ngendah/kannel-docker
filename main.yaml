@@ -31,5 +31,5 @@ services:
       - .env
     environment:
       - BOX_TYPE=smsbox
-      - KANNEL_SMS_CALLBACK_URL=
+      - KANNEL_SMSS_CALLBACK_URL=
       - INCLUDE_CONFIGS=bearerbox.conf redis.conf sms-service.conf

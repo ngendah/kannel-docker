@@ -10,7 +10,7 @@ KANNEL_BEARERBOX_SMSC=
 # empty variable defaults to 0
 KANNEL_LOG_LEVEL=3
 # post callback url for inbound sms
-KANNEL_SMS_CALLBACK_URL=
+KANNEL_SMSS_CALLBACK_URL=
 
 KANNEL_DLR_STORAGE_TYPE=redis
 KANNEL_DLR_STORAGE_HOST=redis
