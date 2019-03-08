@@ -12,7 +12,7 @@ box="$BOX_TYPE"
 bearerbox_host=$KANNEL_BEARERBOX_HOST
 smsc=$KANNEL_BEARERBOX_SMSC
 msisdn=$KANNEL_BEARERBOX_MSISDN
-sendsms_url=$KANNEL_SENDSMS_URL
+callback_url=$KANNEL_SMS_CALLBACK_URL
 
 dlr_storage_type=$KANNEL_DLR_STORAGE_TYPE
 dlr_storage=$KANNEL_DLR_STORAGE
@@ -58,6 +58,7 @@ configure(){
     configure_bearer $1
     configure_database $1
     configure_modem $1
+    configure_service $1
 }
 
 configure_bearer(){
@@ -85,6 +86,11 @@ configure_modem(){
     sed -i "s|^\(init-string\\s*\)=.*$|\\1= $modem_init_string|g" $1
 }
 
+configure_service(){
+    local service_present=`grep -rni 'group *= *sms-service' $1 | wc -l`
+    [[ $service_present -ne 0 ]] || return
+    sed -i "s|^\(get-url\\s*\)=.*$|\\1= $callback_url|g" $1
+}
 configure_database(){
     sed -i "s|^\(dlr-storage\\s*\)=.*$|\\1= ${dlr_storage_type:-internal}|g" $1
     [[ "$dlr_storage" != "internal" ]] || return
