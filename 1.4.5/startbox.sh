@@ -98,18 +98,9 @@ configure_database(){
     [[ $is_redis -eq 0 ]] || configure_redis $1 && return
     local is_pgsql=`grep -rni 'pgsql-connection' $1 | wc -l`
     [[ $is_pgsql -eq 0 ]] || configure_pgsql $1 && return
-    local is_mysql=`grep -rni 'mysql-connection' $1 | wc -l`
-    [[ $is_mysql -eq 0 ]] || configure_mysql $1 && return
 }
 
 configure_pgsql(){
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
-    sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
-    sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
-    sed -i "s|^\(password\\s*\)=.*$|\\1= $dlr_storage_password|g" $1
-}
-
-configure_mysql(){
     sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
     sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
     sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
