@@ -24,9 +24,9 @@ Can Kannel run in docker and be connected to a usb modem?
 
 5. On `main.yml` on `bearerbox.devices` check if the usb modem `tty` is listed and if its not add it.
 
-6. Create directory `conf.d` and copy `bearerbox.conf`, `redis.conf` and `modem.conf` from `conf.d.sample` to `conf.d`.
+6. Create directory `conf.d` and copy `bearerbox.conf`, `redis.conf`, `sms-service.conf` and `modem.conf` from `conf.d.sample` to `conf.d`.
     ```
-    $ mkdir conf.d && cp conf.d.sample/bearerbox.conf conf.d.sample/modem.conf conf.d.sample/redis.conf conf.d
+    $ mkdir conf.d && cp conf.d.sample/bearerbox.conf conf.d.sample/modem.conf conf.d.sample/redis.conf conf.d.sample/sms-service.conf conf.d
     ```
 
 9. Update `.env` file variables.
@@ -42,7 +42,7 @@ Can Kannel run in docker and be connected to a usb modem?
     
 11. Examine CLI for any errors, if all ok test sending as follows;
     ```
-    $ lynx http://localhost:8008//cgi-bin/sendsms?username=kannel&password=kannel&to=&text=
+    $ lynx -dumps http://localhost:8008//cgi-bin/sendsms?username=kannel&password=kannel&to=&text=
     ```
     
 #### NOTES:
