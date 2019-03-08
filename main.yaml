@@ -12,8 +12,6 @@ services:
       - ./conf.d:/etc/kannel/conf.d:z
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
-      - /dev/ttyUSB1:/dev/ttyUSB1
-      - /dev/ttyUSB2:/dev/ttyUSB2
     env_file:
       - .env
     environment:
@@ -33,4 +31,5 @@ services:
       - .env
     environment:
       - BOX_TYPE=smsbox
-      - INCLUDE_CONFIGS=bearerbox.conf redis.conf
+      - KANNEL_SMS_CALLBACK_URL=
+      - INCLUDE_CONFIGS=bearerbox.conf redis.conf sms-service.conf
