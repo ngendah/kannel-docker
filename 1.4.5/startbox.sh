@@ -10,8 +10,9 @@ log_level=${KANNEL_LOG_LEVEL:-0}
 
 box="$BOX_TYPE"
 bearerbox_host=$KANNEL_BEARERBOX_HOST
-smsc=$KANNEL_SMSC
-msisdn=$KANNEL_MSISDN
+smsc=$KANNEL_BEARERBOX_SMSC
+msisdn=$KANNEL_BEARERBOX_MSISDN
+callback_url=$KANNEL_SMSS_CALLBACK_URL
 
 dlr_storage_type=$KANNEL_DLR_STORAGE_TYPE
 dlr_storage=$KANNEL_DLR_STORAGE
@@ -57,6 +58,7 @@ configure(){
     configure_bearer $1
     configure_database $1
     configure_modem $1
+    configure_service $1
 }
 
 configure_bearer(){
@@ -84,6 +86,11 @@ configure_modem(){
     sed -i "s|^\(init-string\\s*\)=.*$|\\1= $modem_init_string|g" $1
 }
 
+configure_service(){
+    local service_present=`grep -rni 'group *= *sms-service' $1 | wc -l`
+    [[ $service_present -ne 0 ]] || return
+    sed -i "s|^\(get-url\\s*\)=.*$|\\1= $callback_url|g" $1
+}
 configure_database(){
     sed -i "s|^\(dlr-storage\\s*\)=.*$|\\1= ${dlr_storage_type:-internal}|g" $1
     [[ "$dlr_storage" != "internal" ]] || return
@@ -91,18 +98,9 @@ configure_database(){
     [[ $is_redis -eq 0 ]] || configure_redis $1 && return
     local is_pgsql=`grep -rni 'pgsql-connection' $1 | wc -l`
     [[ $is_pgsql -eq 0 ]] || configure_pgsql $1 && return
-    local is_mysql=`grep -rni 'mysql-connection' $1 | wc -l`
-    [[ $is_mysql -eq 0 ]] || configure_mysql $1 && return
 }
 
 configure_pgsql(){
-    sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
-    sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
-    sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
-    sed -i "s|^\(password\\s*\)=.*$|\\1= $dlr_storage_password|g" $1
-}
-
-configure_mysql(){
     sed -i "s|^\(host\\s*\)=.*$|\\1= $dlr_storage_host|g" $1
     sed -i "s|^\(username\\s*\)=.*$|\\1= $dlr_storage_username|g" $1
     sed -i "s|^\(database\\s*\)=.*$|\\1= $dlr_storage_dbname|g" $1
