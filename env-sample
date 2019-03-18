@@ -1,6 +1,5 @@
 # override any of these variable on main.yaml file
 BASE_CONFIG_FILENAME=default.conf
-KANNEL_DIR=/etc/kannel
 KANNEL_BEARERBOX_HOST=bearerbox
 # The usb modem sim card number
 KANNEL_BEARERBOX_MSISDN=

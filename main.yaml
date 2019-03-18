@@ -16,6 +16,7 @@ services:
       - .env
     environment:
       - BOX_TYPE=bearerbox
+      - KANNEL_LOG_LEVEL=3
       - INCLUDE_CONFIGS=bearerbox.conf modem.conf redis.conf
     depends_on:
       - redis
@@ -32,4 +33,5 @@ services:
     environment:
       - BOX_TYPE=smsbox
       - KANNEL_SMSS_CALLBACK_URL=
+      - KANNEL_LOG_LEVEL=0
       - INCLUDE_CONFIGS=bearerbox.conf redis.conf sms-service.conf

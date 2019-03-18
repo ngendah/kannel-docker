@@ -89,7 +89,7 @@ configure_modem(){
 configure_service(){
     local service_present=`grep -rni 'group *= *sms-service' $1 | wc -l`
     [[ $service_present -ne 0 ]] || return
-    sed -i "s|^\(get-url\\s*\)=.*$|\\1= $callback_url|g" $1
+    sed -i "s|^\(post-url\\s*\)=.*$|\\1= $callback_url|g" $1
 }
 configure_database(){
     sed -i "s|^\(dlr-storage\\s*\)=.*$|\\1= ${dlr_storage_type:-internal}|g" $1

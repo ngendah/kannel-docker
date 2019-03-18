@@ -23,8 +23,6 @@ RUN set -ex \
 	&& cd .. \
 	&& rm -rf bison-2.7
 
-RUN echo bison --version
-
 ENV KANNEL_BUILD_PACKAGES="linux-headers hiredis-dev postgresql-dev"
 RUN apk add --no-cache --virtual .kannel-deps $KANNEL_BUILD_PACKAGES
 RUN echo "#include <unistd.h>" > /usr/include/sys/unistd.h
