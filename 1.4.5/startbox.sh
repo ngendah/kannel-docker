@@ -22,7 +22,7 @@ dlr_storage_dbname=$KANNEL_DLR_STORAGE_DBNAME
 dlr_storage_password=$KANNEL_DLR_STORAGE_PASSWORD
 dlr_storage_port=$KANNEL_DLR_STORAGE_PORT
 
-device_putty=$KANNEL_DEVICE_PUTTY
+device_tty=$KANNEL_DEVICE_TTY
 device_host=$KANNEL_DEVICE_HOST
 device_type=$KANNEL_DEVICE_TYPE
 modem_smscid=$KANNEL_DEVICE_SMSCID
@@ -74,7 +74,7 @@ configure_modem(){
     local smsc_present=`grep -rni 'group *= *smsc' $1 | wc -l`
     [[ $smsc_present -ne 0 ]] || return
     sed -i "s|^\(my-number\\s*\)=.*$|\\1= $msisdn|g" $1
-    sed -i "s|^\(device\\s*\)=.*$|\\1= $device_putty|g" $1
+    sed -i "s|^\(device\\s*\)=.*$|\\1= $device_tty|g" $1
     sed -i "s|^\(host\\s*\)=.*$|\\1= $device_host|g" $1
     sed -i "s|^\(smsc-id\\s*\)=.*$|\\1= $modem_smscid|g" $1
     local modem_present=`grep -rni 'group *= *modems' $1 | wc -l`
