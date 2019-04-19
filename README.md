@@ -20,7 +20,7 @@ Can Kannel run in docker and be connected to a usb modem?
     $ dmesg | grep tty
     ```
     
-4. Update your `.env` file `KANNEL_DEVICE_PUTTY` with the usb modem `tty`.
+4. Update your `.env` file `KANNEL_DEVICE_TTY` with the usb modem `tty`.
 
 5. On `main.yml` on `bearerbox.devices` check if the usb modem `tty` is listed and if its not add it.
 
